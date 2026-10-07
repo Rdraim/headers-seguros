@@ -45,7 +45,7 @@ These standalone modules are inspired by work on Nexus, Rodrigo Rodrigues's inde
 
 Immutable CSP defaults, malformed configuration rejection and HSTS subdomain control.
 
-[Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
+[Contributing](CONTRIBUTING.en-US.md) · [Security](SECURITY.en-US.md)
 
 MIT © Rodrigo Rodrigues
 
