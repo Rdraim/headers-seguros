@@ -1,0 +1,15 @@
+{
+  "name": "headers-seguros",
+  "version": "1.0.0",
+  "description": "Cabeçalhos de segurança HTTP para Node.js (CSP, HSTS, nosniff, frame-options…) com middleware Express. Zero dependências.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": "./src/index.js",
+  "files": ["src"],
+  "scripts": { "test": "node --test" },
+  "keywords": ["security", "http-headers", "csp", "hsts", "express", "middleware", "seguranca", "owasp"],
+  "author": "Rodrigo Rodrigues",
+  "license": "MIT",
+  "engines": { "node": ">=18" },
+  "repository": { "type": "git", "url": "git+https://github.com/techrodrigo21-ux/headers-seguros.git" }
+}
