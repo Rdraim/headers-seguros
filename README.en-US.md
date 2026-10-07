@@ -1,6 +1,6 @@
 # headers-seguros
 
-[Brazilian Portuguese](README.md) · [Voluntary support](SUPPORT.md)
+[Brazilian Portuguese](README.md) · [Voluntary support](SUPPORT.en-US.md)
 
 Configurable HTTP security headers for Node.js and Express/Connect, without runtime dependencies.
 
@@ -41,7 +41,7 @@ These standalone modules are inspired by work on Nexus, Rodrigo Rodrigues's inde
 
 Immutable CSP defaults, malformed configuration rejection and HSTS subdomain control.
 
-[Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Voluntary support](SUPPORT.md)
+[Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Voluntary support](SUPPORT.en-US.md)
 
 MIT © Rodrigo Rodrigues
 
@@ -53,3 +53,10 @@ Official reference: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Co
 `cspReportOnly: true` lets you assess a policy before enforcing it. This mode does not block content; collecting reports requires your own configured endpoint. Boolean options reject ambiguous strings.
 
 Runnable example with synthetic data: `node examples/uso.mjs`.
+
+
+## ☕ Support this work
+
+If this project helped you, consider buying me a coffee. Any amount is welcome, and sharing your feedback helps too.
+
+[![Support via Pix](assets/support/pix-en-us.svg)](SUPPORT.en-US.md)

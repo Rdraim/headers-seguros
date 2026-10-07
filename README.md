@@ -90,3 +90,10 @@ Referência oficial: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/C
 `cspReportOnly: true` permite avaliar a política antes de aplicá-la. Esse modo não bloqueia conteúdo; recebimento de relatórios exige configurar endpoint próprio. Opções booleanas rejeitam strings ambíguas.
 
 Exemplo executável com dados sintéticos: `node examples/uso.mjs`.
+
+
+## ☕ Apoie este trabalho
+
+Se este projeto te ajudou, considere me pagar um café. Qualquer valor é bem-vindo, e seu comentário também ajuda.
+
+[![Apoiar com Pix](assets/support/pix-pt-br.svg)](SUPPORT.md)
