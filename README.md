@@ -2,13 +2,13 @@
 
 [English (United States)](README.en-US.md) · [Apoio voluntário](SUPPORT.md)
 
-## Revisão 1.1.0
+## Segurança e compatibilidade
 
 CSP imutável, rejeição de configuração malformada e controle de subdomínios HSTS.
 
 Opções: `csp` (true, false ou mapa de diretivas para arrays de fontes; null/false remove uma diretiva), `hsts`, `hstsMaxAge`, `includeSubDomains`, `frame`, `referrer`, `permissions`. Padrão HSTS: 15552000 segundos e subdomínios. Use apenas em HTTPS; confirme todos os subdomínios antes de habilitar essa abrangência. `frame: SAMEORIGIN` também requer ajustar `frame-ancestors` na CSP. COOP/CORP podem afetar integrações externas. Não substitui autorização, proteção CSRF ou auditoria.
 
-Baixe pelo GitHub; não é necessário instalar um pacote homônimo do npm. Para consumir em outro projeto, use uma revisão Git fixada (tag v1.1.0) ou copie o módulo e preserve a licença. Os exemplos abaixo usam importação local após o clone. Node.js 22 ou superior para os testes.
+Baixe pelo GitHub; não é necessário instalar um pacote homônimo do npm. Para consumir em outro projeto, use uma revisão Git fixada (tag v1.2.0) ou copie o módulo e preserve a licença. Os exemplos abaixo usam importação local após o clone. Node.js 22 ou superior para os testes.
 
 Cabeçalhos de segurança para serviços HTTP em Node.js — **sem dependências**.
 Núcleo agnóstico (`construirHeaders`) + middleware para Express/Connect
@@ -83,3 +83,10 @@ Código independente inspirado em problemas resolvidos no Nexus, projeto de Rodr
 [Como contribuir](CONTRIBUTING.md) · [Segurança](SECURITY.md) · [Apoio voluntário](SUPPORT.md)
 
 Referência oficial: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
+
+
+## Uso prático — 1.2.0
+
+`cspReportOnly: true` permite avaliar a política antes de aplicá-la. Esse modo não bloqueia conteúdo; recebimento de relatórios exige configurar endpoint próprio. Opções booleanas rejeitam strings ambíguas.
+
+Exemplo executável com dados sintéticos: `node examples/uso.mjs`.
