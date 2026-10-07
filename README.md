@@ -83,3 +83,10 @@ Código independente inspirado em problemas resolvidos no Nexus, projeto de Rodr
 [Como contribuir](CONTRIBUTING.md) · [Segurança](SECURITY.md) · [Apoio voluntário](SUPPORT.md)
 
 Referência oficial: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
+
+
+## Uso prático — 1.2.0
+
+`cspReportOnly: true` permite avaliar a política antes de aplicá-la. Esse modo não bloqueia conteúdo; recebimento de relatórios exige configurar endpoint próprio. Opções booleanas rejeitam strings ambíguas.
+
+Exemplo executável com dados sintéticos: `node examples/uso.mjs`.

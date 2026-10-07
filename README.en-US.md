@@ -46,3 +46,10 @@ Immutable CSP defaults, malformed configuration rejection and HSTS subdomain con
 MIT © Rodrigo Rodrigues
 
 Official reference: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
+
+
+## Practical use — 1.2.0
+
+`cspReportOnly: true` lets you assess a policy before enforcing it. This mode does not block content; collecting reports requires your own configured endpoint. Boolean options reject ambiguous strings.
+
+Runnable example with synthetic data: `node examples/uso.mjs`.

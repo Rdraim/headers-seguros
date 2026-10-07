@@ -45,12 +45,13 @@ export function construirHeaders(o = {}) {
   const {
     csp = true, hsts = true, hstsMaxAge = 15552000,
     frame = 'DENY', referrer = 'no-referrer',
-    permissions = 'camera=(), microphone=(), geolocation=()', includeSubDomains = true,
+    permissions = 'camera=(), microphone=(), geolocation=()', includeSubDomains = true, cspReportOnly = false,
   } = o;
   if (csp !== false && csp !== true && (!csp || typeof csp !== 'object' || Array.isArray(csp))) throw new TypeError('csp inválida');
   if (!['DENY', 'SAMEORIGIN'].includes(frame)) throw new TypeError('frame inválido');
+  for (const v of [hsts, includeSubDomains, cspReportOnly]) if (typeof v !== 'boolean') throw new TypeError('opção booleana inválida');
   if (!Number.isSafeInteger(hstsMaxAge) || hstsMaxAge < 0) throw new TypeError('hstsMaxAge inválido');
-  for (const v of [referrer, permissions]) if (typeof v !== 'string' || /[\r\n\u0000]/.test(v)) throw new TypeError('valor de header inválido');
+  for (const v of [referrer, permissions]) if (typeof v !== 'string' || /[\u0000-\u001f\u007f]/.test(v)) throw new TypeError('valor de header inválido');
   const h = {
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': frame,
@@ -61,7 +62,7 @@ export function construirHeaders(o = {}) {
     'Permissions-Policy': permissions,
     'Origin-Agent-Cluster': '?1',
   };
-  if (csp) h['Content-Security-Policy'] = montarCSP(csp === true ? CSP_PADRAO : { ...CSP_PADRAO, ...csp });
+  if (csp) h[cspReportOnly ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy'] = montarCSP(csp === true ? CSP_PADRAO : { ...CSP_PADRAO, ...csp });
   if (hsts) h['Strict-Transport-Security'] = `max-age=${hstsMaxAge}${includeSubDomains ? '; includeSubDomains' : ''}`;
   return h;
 }
