@@ -1,6 +1,6 @@
 {
   "name": "headers-seguros",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Configurable HTTP security headers for Node.js and Express/Connect, without runtime dependencies.",
   "type": "module",
   "main": "src/index.js",
@@ -31,6 +31,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/techrodrigo21-ux/headers-seguros.git"
+    "url": "git+https://github.com/Rdraim/headers-seguros.git"
   }
 }
