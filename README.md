@@ -1,5 +1,15 @@
 # headers-seguros
 
+[English (United States)](README.en-US.md) · [Apoio voluntário](SUPPORT.md)
+
+## Revisão 1.1.0
+
+CSP imutável, rejeição de configuração malformada e controle de subdomínios HSTS.
+
+Opções: `csp` (true, false ou mapa de diretivas para arrays de fontes; null/false remove uma diretiva), `hsts`, `hstsMaxAge`, `includeSubDomains`, `frame`, `referrer`, `permissions`. Padrão HSTS: 15552000 segundos e subdomínios. Use apenas em HTTPS; confirme todos os subdomínios antes de habilitar essa abrangência. `frame: SAMEORIGIN` também requer ajustar `frame-ancestors` na CSP. COOP/CORP podem afetar integrações externas. Não substitui autorização, proteção CSRF ou auditoria.
+
+Baixe pelo GitHub; não é necessário instalar um pacote homônimo do npm. Para consumir em outro projeto, use uma revisão Git fixada (tag v1.1.0) ou copie o módulo e preserve a licença. Os exemplos abaixo usam importação local após o clone. Node.js 22 ou superior para os testes.
+
 Cabeçalhos de segurança para serviços HTTP em Node.js — **sem dependências**.
 Núcleo agnóstico (`construirHeaders`) + middleware para Express/Connect
 (`headersSeguros`). Padrões restritivos e sensatos, cada um ajustável.
@@ -18,14 +28,16 @@ Define: `Content-Security-Policy`, `X-Content-Type-Options: nosniff`,
 ## Instalação
 
 ```bash
-npm install headers-seguros
+git clone https://github.com/techrodrigo21-ux/headers-seguros.git
+cd headers-seguros
+npm test
 ```
 
 ## Uso
 
 ```js
 import express from 'express';
-import { headersSeguros } from 'headers-seguros';
+import { headersSeguros } from './src/index.js';
 
 const app = express();
 app.use(headersSeguros());               // padrões seguros
@@ -36,7 +48,7 @@ app.use(headersSeguros({ csp: { 'img-src': ["'self'", 'https:', 'data:'] } }));
 Sem framework:
 
 ```js
-import { construirHeaders } from 'headers-seguros';
+import { construirHeaders } from './src/index.js';
 for (const [k, v] of Object.entries(construirHeaders())) res.setHeader(k, v);
 ```
 
@@ -63,3 +75,11 @@ npm test
 ## Licença
 
 MIT © Rodrigo Rodrigues
+
+## Manutenção e apoio
+
+Código independente inspirado em problemas resolvidos no Nexus, projeto de Rodrigo Rodrigues. Não inclui banco, configuração privada, logs, dados de usuários ou credenciais. Evolução coordenada significa revisar mudanças relacionadas no mesmo ciclo; não há cópia automática de arquivos privados.
+
+[Como contribuir](CONTRIBUTING.md) · [Segurança](SECURITY.md) · [Apoio voluntário](SUPPORT.md)
+
+Referência oficial: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy

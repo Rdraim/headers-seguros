@@ -20,9 +20,14 @@ const CSP_PADRAO = {
   'form-action': ["'self'"],
 };
 
+for (const fontes of Object.values(CSP_PADRAO)) Object.freeze(fontes);
+Object.freeze(CSP_PADRAO);
 const montarCSP = (diretivas) => Object.entries(diretivas)
-  .filter(([, v]) => v && v.length)
-  .map(([k, v]) => `${k} ${v.join(' ')}`)
+  .filter(([, v]) => v !== null && v !== false)
+    .map(([k, v]) => {
+      if (!/^[a-z][a-z0-9-]*$/.test(k) || !Array.isArray(v) || v.some((s) => typeof s !== 'string' || /[\s;,\r\n]/.test(s))) throw new TypeError('diretiva CSP inválida');
+      return `${k} ${v.join(' ')}`;
+    })
   .join('; ');
 
 /**
@@ -40,8 +45,12 @@ export function construirHeaders(o = {}) {
   const {
     csp = true, hsts = true, hstsMaxAge = 15552000,
     frame = 'DENY', referrer = 'no-referrer',
-    permissions = 'camera=(), microphone=(), geolocation=()',
+    permissions = 'camera=(), microphone=(), geolocation=()', includeSubDomains = true,
   } = o;
+  if (csp !== false && csp !== true && (!csp || typeof csp !== 'object' || Array.isArray(csp))) throw new TypeError('csp inválida');
+  if (!['DENY', 'SAMEORIGIN'].includes(frame)) throw new TypeError('frame inválido');
+  if (!Number.isSafeInteger(hstsMaxAge) || hstsMaxAge < 0) throw new TypeError('hstsMaxAge inválido');
+  for (const v of [referrer, permissions]) if (typeof v !== 'string' || /[\r\n\u0000]/.test(v)) throw new TypeError('valor de header inválido');
   const h = {
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': frame,
@@ -53,7 +62,7 @@ export function construirHeaders(o = {}) {
     'Origin-Agent-Cluster': '?1',
   };
   if (csp) h['Content-Security-Policy'] = montarCSP(csp === true ? CSP_PADRAO : { ...CSP_PADRAO, ...csp });
-  if (hsts) h['Strict-Transport-Security'] = `max-age=${hstsMaxAge}; includeSubDomains`;
+  if (hsts) h['Strict-Transport-Security'] = `max-age=${hstsMaxAge}${includeSubDomains ? '; includeSubDomains' : ''}`;
   return h;
 }
 
