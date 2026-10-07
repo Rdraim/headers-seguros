@@ -7,7 +7,7 @@
 # headers-seguros
 
 <!-- public-badges:start -->
-[![license](assets/support/badge-license.svg)](LICENSE) [![CI](assets/support/badge-ci.svg)](https://github.com/Rdraim/headers-seguros/actions) [![release](assets/support/badge-release.svg)](https://github.com/Rdraim/headers-seguros/releases)
+[![license](assets/support/badge-license.svg)](LICENSE) [![CI](assets/support/badge-ci.svg)](https://github.com/Rdraim/headers-seguros/actions) [![release](assets/support/badge-release.svg)](https://github.com/Rdraim/headers-seguros/releases) [![Git](assets/support/badge-git.svg)](https://github.com/Rdraim/headers-seguros/commits/main)
 <!-- public-badges:end -->
 
 ## Segurança e compatibilidade
