@@ -6,6 +6,10 @@
 
 # 1.2.0 — 2026-10-07
 
+## 1.2.1 — 2026-10-07
+
+Identidad Rdraim, presentación gráfica, revisión de compatibilidad y control de historial más eficiente. API de ejecución conservada.
+
 `cspReportOnly: true` permite evaluar una política antes de aplicarla. Este modo no bloquea contenido; recopilar informes requiere un endpoint propio configurado. Las opciones booleanas rechazan cadenas ambiguas.
 
 # 1.1.0 — 2026-10-07
