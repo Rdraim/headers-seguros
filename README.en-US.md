@@ -6,6 +6,10 @@
 
 # headers-seguros
 
+<!-- public-badges:start -->
+[![license](assets/support/badge-license.svg)](LICENSE) [![CI](assets/support/badge-ci.svg)](https://github.com/Rdraim/headers-seguros/actions) [![release](assets/support/badge-release.svg)](https://github.com/Rdraim/headers-seguros/releases)
+<!-- public-badges:end -->
+
 Configurable HTTP security headers for Node.js and Express/Connect, without runtime dependencies.
 
 ## Start here

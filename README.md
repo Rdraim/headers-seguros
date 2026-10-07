@@ -6,6 +6,10 @@
 
 # headers-seguros
 
+<!-- public-badges:start -->
+[![license](assets/support/badge-license.svg)](LICENSE) [![CI](assets/support/badge-ci.svg)](https://github.com/Rdraim/headers-seguros/actions) [![release](assets/support/badge-release.svg)](https://github.com/Rdraim/headers-seguros/releases)
+<!-- public-badges:end -->
+
 ## Segurança e compatibilidade
 
 CSP imutável, rejeição de configuração malformada e controle de subdomínios HSTS.
