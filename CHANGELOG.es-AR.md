@@ -6,10 +6,10 @@
 
 # 1.2.0 — 2026-10-07
 
-`cspReportOnly: true` permite avaliar a política antes de aplicá-la. Esse modo não bloqueia conteúdo; recebimento de relatórios exige configurar endpoint próprio. Opções booleanas rejeitam strings ambíguas.
+`cspReportOnly: true` permite evaluar una política antes de aplicarla. Este modo no bloquea contenido; recopilar informes requiere un endpoint propio configurado. Las opciones booleanas rechazan cadenas ambiguas.
 
 # 1.1.0 — 2026-10-07
 
-CSP imutável, rejeição de configuração malformada e controle de subdomínios HSTS.
+CSP predeterminada inmutable, rechazo de configuraciones mal formadas y control de subdominios HSTS.
 
-Documentação PT-BR/EN-US, apoio voluntário ainda sem canal de pagamento e verificações de publicação.
+Documentación en portugués brasileño e inglés de Estados Unidos, apoyo voluntario todavía sin canal de pago en esa versión y verificaciones de publicación.
