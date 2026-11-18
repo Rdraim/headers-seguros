@@ -16,7 +16,7 @@ CSP imutável, rejeição de configuração malformada e controle de subdomínio
 
 Opções: `csp` (true, false ou mapa de diretivas para arrays de fontes; null/false remove uma diretiva), `hsts`, `hstsMaxAge`, `includeSubDomains`, `hstsIncondicional`, `frame`, `referrer`, `permissions`. Padrão HSTS: 15552000 segundos e subdomínios; desde a 1.3.0 o middleware só o envia em requisição segura e nunca para loopback (veja [HSTS](#hsts)). Confirme todos os subdomínios antes de habilitar essa abrangência. `frame: SAMEORIGIN` também requer ajustar `frame-ancestors` na CSP. COOP/CORP podem afetar integrações externas. Não substitui autorização, proteção CSRF ou auditoria.
 
-Baixe pelo GitHub; não é necessário instalar um pacote homônimo do npm. Para consumir em outro projeto, use uma revisão Git fixada (tag v1.2.1) ou copie o módulo e preserve a licença. Os exemplos abaixo usam importação local após o clone. Node.js 22 ou superior para os testes.
+Baixe pelo GitHub; não é necessário instalar um pacote homônimo do npm. Para consumir em outro projeto, use uma revisão Git fixada (tag v1.3.0) ou copie o módulo e preserve a licença. Os exemplos abaixo usam importação local após o clone. Node.js 22 ou superior para os testes.
 
 Cabeçalhos de segurança para serviços HTTP em Node.js — **sem dependências**.
 Núcleo agnóstico (`construirHeaders`) + middleware para Express/Connect
@@ -92,6 +92,10 @@ cabeçalho prenderia o ambiente de desenvolvimento em HTTPS.
 O cabeçalho `X-Forwarded-Proto` não é lido. Atrás de um proxy que encerra o TLS,
 use o `trust proxy` do Express (que preenche `req.secure`) ou envie o HSTS no
 próprio proxy. `hstsIncondicional: true` restaura o envio em toda resposta.
+
+Quem ficou com HTTPS forçado no `localhost` por uma versão anterior pode limpar o
+registro servindo uma vez por HTTPS com `{ hstsIncondicional: true, hstsMaxAge: 0 }`
+ou apagando o HSTS do host nas configurações do navegador.
 
 O HSTS vale para o host em **todas as portas**. Se o mesmo nome também é servido
 em HTTP puro noutra porta, depois de um acesso por HTTPS o navegador passa a

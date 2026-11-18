@@ -23,7 +23,7 @@ npm test
 node tools/check-public-content.mjs
 ```
 
-These imports work from the cloned repository root. To use the module in another project, install a pinned Git tag (v1.2.1) or copy the module while retaining the MIT license. This documentation does not claim an npm registry release.
+These imports work from the cloned repository root. To use the module in another project, install a pinned Git tag (v1.3.0) or copy the module while retaining the MIT license. This documentation does not claim an npm registry release.
 
 ```js
 import { construirHeaders, headersSeguros } from './src/index.js';
@@ -66,6 +66,10 @@ loopback the header would lock your development environment into HTTPS.
 The `X-Forwarded-Proto` header is not read. Behind a TLS-terminating proxy, use
 Express `trust proxy` (which sets `req.secure`) or send HSTS from the proxy
 itself. `hstsIncondicional: true` restores sending it on every response.
+
+If an earlier version left `localhost` forced to HTTPS, clear it by serving one
+HTTPS response with `{ hstsIncondicional: true, hstsMaxAge: 0 }` or by deleting
+the host's HSTS entry in the browser settings.
 
 HSTS applies to the host on **every port**. If the same name is also served
 over plain HTTP on another port, after one HTTPS visit the browser forces HTTPS
