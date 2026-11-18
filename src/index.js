@@ -67,15 +67,55 @@ export function construirHeaders(o = {}) {
   return h;
 }
 
+// O navegador ignora HSTS recebido sobre HTTP puro, e HSTS em loopback prende o
+// ambiente de desenvolvimento em HTTPS (o HSTS vale para o host em todas as portas).
+const IPV4_LOOPBACK = /^(?:::ffff:)?127(?:\.\d{1,3}){3}$/;
+function hostSemPorta(valor) {
+  let h = String(valor).trim().toLowerCase();
+  if (h.startsWith('[')) {
+    const fim = h.indexOf(']');
+    if (fim > 0) h = h.slice(1, fim);
+  } else if (h.indexOf(':') === h.lastIndexOf(':')) {
+    // nome:porta ou IPv4:porta; IPv6 sem colchetes tem mais de um ':' e fica como está
+    const p = h.indexOf(':');
+    if (p >= 0) h = h.slice(0, p);
+  }
+  return h.endsWith('.') ? h.slice(0, -1) : h;
+}
+function ehLoopback(host) {
+  if (!host) return false;
+  const h = hostSemPorta(host);
+  return h === 'localhost' || h.endsWith('.localhost') || h === '::1' || h === '0:0:0:0:0:0:0:1' || IPV4_LOOPBACK.test(h);
+}
+// Só sinais da própria conexão: req.secure (Express calcula conforme o "trust proxy"
+// configurado no app) ou o socket TLS. Nenhum cabeçalho X-Forwarded-* é lido aqui.
+function requisicaoSegura(req) {
+  return req?.secure === true || req?.socket?.encrypted === true;
+}
+function hostDaRequisicao(req) {
+  const hs = req?.headers || {};
+  const v = hs.host ?? hs[':authority'];
+  return typeof v === 'string' ? v : '';
+}
+
 /**
  * Middleware Express/Connect que aplica os cabeçalhos e remove o X-Powered-By.
- * @param {object} [opcoes] mesmas de construirHeaders
+ * Por padrão o Strict-Transport-Security só sai em requisição segura e nunca para
+ * hosts de loopback (localhost, *.localhost, 127.0.0.0/8, ::1), com ou sem porta.
+ * @param {object} [opcoes] mesmas de construirHeaders, mais:
+ * @param {boolean} [opcoes.hstsIncondicional=false] true restaura o envio do HSTS
+ *   em toda resposta (comportamento até a 1.2.x)
  */
 export function headersSeguros(opcoes = {}) {
-  const headers = construirHeaders(opcoes);
+  const { hstsIncondicional = false } = opcoes;
+  if (typeof hstsIncondicional !== 'boolean') throw new TypeError('opção booleana inválida');
+  const { 'Strict-Transport-Security': hsts, ...headers } = construirHeaders(opcoes);
   return function headersSegurosMiddleware(req, res, next) {
     res.removeHeader && res.removeHeader('X-Powered-By');
     for (const [k, v] of Object.entries(headers)) res.setHeader(k, v);
+    if (hsts && (hstsIncondicional || (requisicaoSegura(req) && !ehLoopback(hostDaRequisicao(req))))) {
+      res.setHeader('Strict-Transport-Security', hsts);
+    }
     next();
   };
 }
