@@ -8,7 +8,11 @@
 
 Núcleo sem dependências de runtime. Node.js 22 e 24 na CI. Instalação pelo Git; não há pacote deste projeto publicado no npm. Consulte Releases e fixe uma tag/commit ao integrar. Atualizações de dependências exigem análise de licença, engines e testes do consumidor. Um badge de CI não certifica segurança.
 
-Revisão: 2026-10-07. ESM · MIT · Node.js >=22.
+Revisão: 2026-11-18. ESM · MIT · Node.js >=22.
+
+## Mudança de padrão na 1.3.0
+
+Por segurança, o middleware `headersSeguros` deixou de enviar `Strict-Transport-Security` em toda resposta: agora só o envia com `req.secure === true` ou socket TLS e nunca para `localhost`, `*.localhost`, `127.0.0.0/8` ou `::1` (com ou sem porta). Nenhum cabeçalho `X-Forwarded-*` é lido. Atrás de proxy que encerra o TLS sem `trust proxy` do Express, o HSTS deixa de sair do app: configure o `trust proxy`, envie o HSTS no proxy ou passe `hstsIncondicional: true` para voltar ao comportamento da 1.2.x. `construirHeaders` e as demais opções não mudaram.
 
 [Node.js releases](https://nodejs.org/en/about/previous-releases) · [GitHub Releases](https://github.com/Rdraim/headers-seguros/releases)
 

@@ -8,7 +8,11 @@
 
 No runtime dependencies in the core. CI targets Node.js 22 and 24. Install from Git; this project is not published on npm. Review Releases and pin a tag/commit for integration. Dependency updates require license, engine and consumer test review. A CI badge is not a security certification.
 
-Review: 2026-10-07. ESM · MIT · Node.js >=22.
+Review: 2026-11-18. ESM · MIT · Node.js >=22.
+
+## Default change in 1.3.0
+
+For security, the `headersSeguros` middleware no longer sends `Strict-Transport-Security` on every response: it now sends it only with `req.secure === true` or a TLS socket, and never to `localhost`, `*.localhost`, `127.0.0.0/8` or `::1` (with or without a port). No `X-Forwarded-*` header is read. Behind a TLS-terminating proxy without Express `trust proxy`, the app stops sending HSTS: configure `trust proxy`, send HSTS from the proxy, or pass `hstsIncondicional: true` to restore the 1.2.x behavior. `construirHeaders` and the other options are unchanged.
 
 [Node.js releases](https://nodejs.org/en/about/previous-releases) · [GitHub Releases](https://github.com/Rdraim/headers-seguros/releases)
 
