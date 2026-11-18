@@ -39,7 +39,56 @@ Public function and option names remain in Portuguese for compatibility.
 
 ## Behavior and limits
 
-Options: `csp` (true, false, or a directive map containing source arrays; null/false removes a directive), `hsts`, `hstsMaxAge`, `includeSubDomains`, `frame`, `referrer`, `permissions`. HSTS defaults to 15552000 seconds and includes subdomains. Use it on HTTPS only and confirm subdomain readiness. `frame: SAMEORIGIN` also requires an appropriate CSP `frame-ancestors` value. COOP/CORP can affect external integrations. These headers do not replace authorization, CSRF defenses or a security review.
+Options: `csp` (true, false, or a directive map containing source arrays; null/false removes a directive), `hsts`, `hstsMaxAge`, `includeSubDomains`, `hstsIncondicional`, `frame`, `referrer`, `permissions`. HSTS defaults to 15552000 seconds and includes subdomains; since 1.3.0 the middleware sends it only on secure requests and never to loopback hosts (see [HSTS](#hsts)). Confirm subdomain readiness before enabling that scope.
+
+| option | default | description |
+|---|---|---|
+| `csp` | `true` | `false` disables it; an object extends/overrides directives |
+| `cspReportOnly` | `false` | `true` sends the CSP as `Content-Security-Policy-Report-Only` |
+| `hsts` | `true` | `Strict-Transport-Security`; `false` disables it |
+| `hstsMaxAge` | `15552000` | HSTS lifetime (seconds) |
+| `includeSubDomains` | `true` | adds `includeSubDomains` to HSTS |
+| `hstsIncondicional` | `false` | middleware only: `true` sends HSTS on every response, including HTTP and loopback (behavior up to 1.2.x) |
+| `frame` | `'DENY'` | `X-Frame-Options` (`DENY` or `SAMEORIGIN`) |
+| `referrer` | `'no-referrer'` | `Referrer-Policy` |
+| `permissions` | `camera=(), microphone=(), geolocation=()` | `Permissions-Policy` |
+
+`construirHeaders` does not see the request: with `hsts: true` the returned object always contains `Strict-Transport-Security`. Without the middleware, send that header only over HTTPS and outside loopback, or use `hsts: false` on HTTP. `frame: SAMEORIGIN` also requires an appropriate CSP `frame-ancestors` value. COOP/CORP can affect external integrations. These headers do not replace authorization, CSRF defenses or a security review.
+
+## HSTS
+
+Since 1.3.0 the `headersSeguros` middleware sends `Strict-Transport-Security`
+only when the request is secure (`req.secure === true` or a TLS socket) and
+never to loopback hosts: `localhost`, `*.localhost`, `127.0.0.0/8` and `::1`,
+with or without a port. Browsers ignore HSTS received over plain HTTP, and on
+loopback the header would lock your development environment into HTTPS.
+
+The `X-Forwarded-Proto` header is not read. Behind a TLS-terminating proxy, use
+Express `trust proxy` (which sets `req.secure`) or send HSTS from the proxy
+itself. `hstsIncondicional: true` restores sending it on every response.
+
+HSTS applies to the host on **every port**. If the same name is also served
+over plain HTTP on another port, after one HTTPS visit the browser forces HTTPS
+on that port too, and that access breaks until `max-age` expires. Start with a
+short `max-age` and enable `includeSubDomains` only after checking that every
+subdomain answers over HTTPS:
+
+```js
+app.use(headersSeguros({ hstsMaxAge: 300, includeSubDomains: false })); // first rollout
+// once validated: raise hstsMaxAge and, if appropriate, includeSubDomains: true
+```
+
+## Permissions-Policy
+
+The default stays `camera=(), microphone=(), geolocation=()`. To also block the
+serial port, USB and HID APIs, pass the full policy in `permissions` (the value
+replaces the default):
+
+```js
+app.use(headersSeguros({
+  permissions: 'camera=(), microphone=(), geolocation=(), serial=(), usb=(), hid=()',
+}));
+```
 
 ## Maintenance
 

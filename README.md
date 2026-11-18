@@ -14,7 +14,7 @@
 
 CSP imutável, rejeição de configuração malformada e controle de subdomínios HSTS.
 
-Opções: `csp` (true, false ou mapa de diretivas para arrays de fontes; null/false remove uma diretiva), `hsts`, `hstsMaxAge`, `includeSubDomains`, `frame`, `referrer`, `permissions`. Padrão HSTS: 15552000 segundos e subdomínios. Use apenas em HTTPS; confirme todos os subdomínios antes de habilitar essa abrangência. `frame: SAMEORIGIN` também requer ajustar `frame-ancestors` na CSP. COOP/CORP podem afetar integrações externas. Não substitui autorização, proteção CSRF ou auditoria.
+Opções: `csp` (true, false ou mapa de diretivas para arrays de fontes; null/false remove uma diretiva), `hsts`, `hstsMaxAge`, `includeSubDomains`, `hstsIncondicional`, `frame`, `referrer`, `permissions`. Padrão HSTS: 15552000 segundos e subdomínios; desde a 1.3.0 o middleware só o envia em requisição segura e nunca para loopback (veja [HSTS](#hsts)). Confirme todos os subdomínios antes de habilitar essa abrangência. `frame: SAMEORIGIN` também requer ajustar `frame-ancestors` na CSP. COOP/CORP podem afetar integrações externas. Não substitui autorização, proteção CSRF ou auditoria.
 
 Baixe pelo GitHub; não é necessário instalar um pacote homônimo do npm. Para consumir em outro projeto, use uma revisão Git fixada (tag v1.2.1) ou copie o módulo e preserve a licença. Os exemplos abaixo usam importação local após o clone. Node.js 22 ou superior para os testes.
 
@@ -60,19 +60,61 @@ import { construirHeaders } from './src/index.js';
 for (const [k, v] of Object.entries(construirHeaders())) res.setHeader(k, v);
 ```
 
+`construirHeaders` não conhece a requisição: com `hsts: true` o objeto sempre
+traz `Strict-Transport-Security`. Sem o middleware, envie esse cabeçalho só em
+HTTPS e fora de loopback, ou use `hsts: false` no HTTP.
+
 ## Opções
 
 | opção | padrão | descrição |
 |---|---|---|
 | `csp` | `true` | `false` desliga; um objeto estende/sobrescreve as diretivas |
-| `hsts` | `true` | `Strict-Transport-Security` (só use em HTTPS) |
+| `cspReportOnly` | `false` | `true` envia a CSP como `Content-Security-Policy-Report-Only` |
+| `hsts` | `true` | `Strict-Transport-Security`; `false` desliga |
 | `hstsMaxAge` | `15552000` | validade do HSTS (segundos) |
+| `includeSubDomains` | `true` | acrescenta `includeSubDomains` ao HSTS |
+| `hstsIncondicional` | `false` | só no middleware: `true` envia o HSTS em toda resposta, inclusive HTTP e loopback (comportamento até a 1.2.x) |
 | `frame` | `'DENY'` | `X-Frame-Options` (`DENY` ou `SAMEORIGIN`) |
 | `referrer` | `'no-referrer'` | `Referrer-Policy` |
 | `permissions` | `camera=(), microphone=(), geolocation=()` | `Permissions-Policy` |
 
 > Ajuste a CSP ao seu app — uma política boa é restritiva por padrão e abre só o
 > necessário. Teste em homologação antes de produção.
+
+## HSTS
+
+Desde a 1.3.0 o middleware `headersSeguros` só envia `Strict-Transport-Security`
+quando a requisição é segura (`req.secure === true` ou socket TLS) e nunca para
+hosts de loopback: `localhost`, `*.localhost`, `127.0.0.0/8` e `::1`, com ou sem
+porta. O navegador ignora HSTS recebido sobre HTTP puro, e em loopback o
+cabeçalho prenderia o ambiente de desenvolvimento em HTTPS.
+
+O cabeçalho `X-Forwarded-Proto` não é lido. Atrás de um proxy que encerra o TLS,
+use o `trust proxy` do Express (que preenche `req.secure`) ou envie o HSTS no
+próprio proxy. `hstsIncondicional: true` restaura o envio em toda resposta.
+
+O HSTS vale para o host em **todas as portas**. Se o mesmo nome também é servido
+em HTTP puro noutra porta, depois de um acesso por HTTPS o navegador passa a
+forçar HTTPS também nessa porta, e o acesso quebra até o `max-age` expirar.
+Comece com um `max-age` curto e só ligue `includeSubDomains` depois de conferir
+que todos os subdomínios respondem em HTTPS:
+
+```js
+app.use(headersSeguros({ hstsMaxAge: 300, includeSubDomains: false })); // primeiro teste
+// depois de validar: aumente o hstsMaxAge e, se couber, includeSubDomains: true
+```
+
+## Permissions-Policy
+
+O padrão continua `camera=(), microphone=(), geolocation=()`. Para bloquear
+também as APIs de porta serial, USB e HID, passe a política completa em
+`permissions` (o valor substitui o padrão):
+
+```js
+app.use(headersSeguros({
+  permissions: 'camera=(), microphone=(), geolocation=(), serial=(), usb=(), hid=()',
+}));
+```
 
 ## Testes
 
